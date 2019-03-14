@@ -28,8 +28,11 @@ func (c Client) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
 					Local: k,
 				},
 			}
-
-			tokens = append(tokens, t, xml.CharData(v), xml.EndElement{Name: t.Name})
+			for ak, av := range v {
+				if ak == "Value" { continue }
+				t.Attr = append( t.Attr,	xml.Attr{Name: xml.Name{Space: "", Local: ak}, Value: av} )
+			}
+			tokens = append(tokens, t, xml.CharData(v["Value"]), xml.EndElement{Name: t.Name})
 		}
 
 		endHeader(c.HeaderName)
